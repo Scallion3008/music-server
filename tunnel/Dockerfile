@@ -1,6 +1,9 @@
-FROM alpine:3.22.0
+FROM ngrok/ngrok:3.23.3-alpine
 
-RUN apk update && apk add --no-cache jq curl
-RUN curl https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz | tar xzvf - -C /usr/local/bin
+USER root
+RUN apk add --update --no-cache jq curl
 
-CMD ["ngrok", "tcp", "2222"]
+# This is dumb as fuck.
+# Default user 'ngrok' has its shell set to the ngrok executable, so...
+USER ngrok
+CMD ["tcp", "2222"]
