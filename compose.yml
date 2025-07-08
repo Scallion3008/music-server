@@ -15,20 +15,20 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
-    restart: unless-stopped
+    restart: always
 
   ssh-tunnel:
     build: tunnel
     container_name: music-server-tunnel
     env_file: tunnel/.env.tunnel
     network_mode: "service:openssh-server"
-    restart: unless-stopped
     healthcheck:
       test: "[ $(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].config.addr') == 'localhost:2222' ]"
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 30s
+    restart: always
 
   telegram-bot:
     build: telegram_bot
@@ -42,4 +42,4 @@ services:
         condition: service_healthy
       ssh-tunnel:
         condition: service_healthy
-    restart: unless-stopped
+    restart: always
