@@ -1,9 +1,5 @@
-FROM ngrok/ngrok:3.23.3-alpine
+FROM tailscale/tailscale:v1.94.1
 
-USER root
-RUN apk add --update --no-cache jq curl
+RUN apk add --update --no-cache jq
+CMD ["/usr/local/bin/containerboot"]
 
-# This is dumb as fuck.
-# Default user 'ngrok' has its shell set to the ngrok executable, so...
-USER ngrok
-CMD ["tcp", "2222"]

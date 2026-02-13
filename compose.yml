@@ -2,13 +2,13 @@ services:
   openssh-server:
     build: server
     container_name: music-server
-    hostname: music-server
+    # hostname: music-server
     env_file: server/.env.server
     volumes:
       - ./server/config:/config
       - ./music:/music
-    ports:
-      - ${SSH_PORT}:2222
+    # ports:
+    #   - ${SSH_PORT}:2222
     healthcheck:
       test: nc -zv 127.0.0.1 2222
       interval: 5s
@@ -16,30 +16,43 @@ services:
       retries: 10
       start_period: 30s
     restart: always
+    network_mode: service:tunnel
 
-  ssh-tunnel:
+  tunnel:
     build: tunnel
-    container_name: music-server-tunnel
+    container_name: tunnel
+    hostname: music-server-tunnel
     env_file: tunnel/.env.tunnel
-    network_mode: "service:openssh-server"
+    environment:
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - music-server-tunnel:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
     healthcheck:
-      test: "[ $(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].config.addr') == 'localhost:2222' ]"
+      test: "tailscale status --peers=false --json | jq -e '.Self.Online'"
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 30s
-    restart: always
 
   telegram-bot:
     build: telegram_bot
     container_name: music-server-bot
     env_file: telegram_bot/.env.bot
-    network_mode: "service:openssh-server"
+    network_mode: service:tunnel
     volumes:
       - ./music:/music
     depends_on:
       openssh-server:
         condition: service_healthy
-      ssh-tunnel:
+      tunnel:
         condition: service_healthy
     restart: always
+
+volumes:
+  music-server-tunnel:
+    driver: local

@@ -60,13 +60,12 @@ LOG_STDOUT=true
 
 ### SSH tunnel
 
-The author tunnels SSH traffic over an ngrok TCP tunnel because she's poor. Should you choose to do the same, you'll need an ngrok account with a valid payment method added. (At the time of writing, ngrok TCP tunnels are free-of-charge, but require a payment method for abuse prevention.)
+The project has migrated to Tailscale. Simply specify TS_AUTHKEY=your_ts_authkey in `tunnel/.env.tunnel`.
 
-Setup is simple. In `tunnel/.env.tunnel`, set `NGROK_AUTHTOKEN=your_ngrok_authtoken`.
+If you're hosting your music on an internet-facing server, the tunnel is not necessary. To disable it, comment out the following sections in `compose.yml`:
+- `services.tunnel`
+- `services.telegram-bot.depends_on.tunnel`
 
-If you're hosting your music on an internet-facing server, the SSH tunnel is not necessary. To disable it, comment out the following sections in `compose.yml`:
-- `services.ssh-tunnel`
-- `services.telegram-bot.depends_on.ssh-tunnel`
 
 ### Telegram bot
 
