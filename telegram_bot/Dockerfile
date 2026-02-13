@@ -1,6 +1,6 @@
-FROM python:3.13.5-slim
+FROM python:3.14.3-alpine3.23
 
-RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+RUN apk add --update --no-cache ffmpeg
 
 # Install pip requirements before copying other files to better utilize build cache
 COPY requirements.txt requirements.txt
