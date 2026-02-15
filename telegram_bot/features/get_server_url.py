@@ -17,7 +17,7 @@ async def get_server_addr(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
   await update.message.reply_text(
     f"SSH server address: `{hostname}:2222`\n"
-    "Remember to connect to your Tailnet before SSHing in or running rsync\!",
+    "Remember to connect to your Tailnet before SSHing in or running rsync\\!",
     parse_mode=ParseMode.MARKDOWN_V2,
   )
 

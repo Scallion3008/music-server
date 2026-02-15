@@ -2,13 +2,10 @@ services:
   openssh-server:
     build: server
     container_name: music-server
-    # hostname: music-server
     env_file: server/.env.server
     volumes:
       - ./server/config:/config
       - ./music:/music
-    # ports:
-    #   - ${SSH_PORT}:2222
     healthcheck:
       test: nc -zv 127.0.0.1 2222
       interval: 5s

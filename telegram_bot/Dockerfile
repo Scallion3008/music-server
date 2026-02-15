@@ -1,11 +1,17 @@
-FROM python:3.14.3-alpine3.23
+FROM alpine:3.23.3
+
+WORKDIR /telegram_bot
 
 RUN apk add --update --no-cache ffmpeg
 
-# Install pip requirements before copying other files to better utilize build cache
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt && pip cache purge
+# Install uv and add to $PATH
+RUN wget -O - https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+# Install Python packages before copying other files to better utilize build cache
+COPY pyproject.toml pyproject.toml
+RUN uv sync
 
 COPY . .
 
-CMD ["python3", "main.py"]
+CMD ["uv", "run", "main.py"]
