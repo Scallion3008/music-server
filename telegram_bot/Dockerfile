@@ -12,6 +12,6 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY pyproject.toml pyproject.toml
 RUN uv sync
 
-COPY . .
+COPY --exclude=music --exclude=pyproject.toml . .
 
 CMD ["uv", "run", "main.py"]

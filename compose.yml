@@ -42,7 +42,7 @@ services:
     env_file: telegram_bot/.env.bot
     network_mode: service:tunnel
     volumes:
-      - ./music:/music
+      - ./music:/telegram_bot/music
     depends_on:
       openssh-server:
         condition: service_healthy
